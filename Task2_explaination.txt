@@ -1,0 +1,44 @@
+Q) Scenario: 
+You are designing a permissioned blockchain for a supply chain network. The blockchain 
+should: 
+• Support multiple companies who do not fully trust each other 
+• Allow selective sharing of transactions between participants 
+• Be efficient in terms of consensus and scalability 
+Task: 
+• What blockchain framework would you choose (Hyperledger Fabric, Substrate, or 
+Ethereum L2)? 
+• Justify your choice and explain: 
+o How consensus will be handled 
+o How privacy and selective transaction visibility will be ensured 
+o What role smart contracts play in your design
+
+
+ans)  For a permissioned blockchain for a supply chain network, the best framework choice would be Hyperledger Fabric. Here's why:
+
+🔹 Why Hyperledger Fabric?
+Permissioned Nature: Fabric is designed for enterprise use cases where multiple organizations participate in a blockchain network but do not fully trust each other.
+Selective Transaction Sharing: It supports private channels and data confidentiality, allowing specific participants to see only relevant transactions.
+Efficient Consensus: Fabric does not rely on energy-intensive Proof-of-Work but instead uses a pluggable consensus model suited for scalability.
+Smart Contract (Chaincode) Support: It enables custom business logic execution while ensuring regulatory compliance.
+ How Key Aspects are Handled:
+1) Consensus Mechanism
+Fabric uses a modular approach to consensus, allowing organizations to choose the best model for their needs.
+Recommended consensus mechanisms:
+Raft (Leader-based crash fault-tolerant consensus): Suitable for scalability.
+BFT (Byzantine Fault Tolerant) Algorithms (e.g., IBFT, SBFT) for additional security.
+Why?
+Efficient and scalable compared to PoW/PoS.
+Works well in permissioned settings where participants are known entities.
+2)Privacy & Selective Transaction Visibility
+Fabric uses Private Data Collections & Channels:
+Private Channels: Only participants in the channel can see transactions.
+Private Data Collections: Specific subsets of data are accessible only to authorized participants.
+Access Control via MSPs (Membership Service Providers)
+Each organization has its own identity issued by a CA (Certificate Authority).
+Transactions are only shared with the relevant parties.
+3) Role of Smart Contracts (Chaincode)
+Automate Business Logic: Fabric uses Chaincode (Smart Contracts) written in Go, Java, or JavaScript to define transaction rules.
+Supply Chain Use Cases:
+Product Tracking: Chaincode ensures that each product movement (manufacturing → distribution → retail) is logged immutably.
+Compliance & Audits: Regulators can have read-only access to verify compliance without seeing proprietary business data.
+Automated Settlements: Payments and contractual obligations can be enforced using chaincode logic.

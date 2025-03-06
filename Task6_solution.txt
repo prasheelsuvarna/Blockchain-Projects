@@ -1,0 +1,85 @@
+Q) Task: Identify and fix issues in the following Solidity contract: 
+// Solidity version missing 
+contract BuggyToken { 
+uint256 public totalSupply; 
+mapping(address => uint256) balances; 
+constructor(uint256 _initialSupply) public { 
+totalSupply = _initialSupply; 
+balances[msg.sender] = _initialSupply; 
+} 
+function transfer(address to, uint256 amount) public { 
+require(balances[msg.sender] >= amount); 
+balances[msg.sender] -= amount; 
+balances[to] += amount; 
+} 
+} 
+Task: 
+1. Identify at least 3 issues in this contract and explain how you would fix them. 
+2. Optimize the contract for gas efficiency.
+
+
+
+ans) ssues in the Contract and Fixes
+Issue 1: Missing Solidity Version
+Problem: The Solidity version pragma is missing, which can cause compilation issues and security vulnerabilities due to unintended version differences.
+Fix: Add a version pragma at the top to specify a Solidity version range:
+pragma solidity ^0.8.0;
+
+2)Issue 2: transfer Function Lacks a Return Value
+Problem: The transfer function does not return a boolean, which is the standard ERC-20 practice. Without a return value, callers cannot verify the success of the transfer.
+Fix: Modify the function signature to return bool
+
+function transfer(address to, uint256 amount) public returns (bool) {
+    require(balances[msg.sender] >= amount, "Insufficient balance");
+    balances[msg.sender] -= amount;
+    balances[to] += amount;
+    return true;
+}
+
+3) Issue 3: Lack of Event Emission
+Problem: The contract does not emit an event in the transfer function, making it difficult for external systems (like dApps and explorers) to track token transfers.
+Fix: Add an event declaration and emit it in the transfer function
+event Transfer(address indexed from, address indexed to, uint256 value);
+
+function transfer(address to, uint256 amount) public returns (bool) {
+    require(balances[msg.sender] >= amount, "Insufficient balance");
+    balances[msg.sender] -= amount;
+    balances[to] += amount;
+    emit Transfer(msg.sender, to, amount);
+    return true;
+}
+
+
+Optimizations for Gas Efficiency
+1) Use unchecked for Arithmetic Operations
+Why? Solidity 0.8+ includes automatic overflow/underflow checks, which consume extra gas. Since we already use require, we can safely disable these checks using unchecked {}.
+
+function transfer(address to, uint256 amount) public returns (bool) {
+    require(balances[msg.sender] >= amount, "Insufficient balance");
+
+    unchecked {
+        balances[msg.sender] -= amount;
+        balances[to] += amount;
+    }
+
+    emit Transfer(msg.sender, to, amount);
+    return true;
+}
+
+
+2)  Mark balances Mapping as private
+Why? The balances mapping should be private to reduce unnecessary storage reads in Solidity. Instead, create a getter function.
+
+mapping(address => uint256) private balances;
+
+function balanceOf(address account) external view returns (uint256) {
+    return balances[account];
+}
+
+
+3) Use immutable for totalSupply
+Why? Immutable variables save gas because they are stored in contract code instead of storage.
+
+uint256 public immutable totalSupply;
+
+
